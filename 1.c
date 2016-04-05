@@ -44,13 +44,19 @@ int dec=0,start;
     return dec;
 }*/
 
+/*void build_route(int *mas_route, char* buf) {
 
+	int i, n;
+	
+	for (i=0;*/
+	
 
 void main(int argc,char* argv) {
 
 int pipe12, len_read, len_write, test;
+int mas_route[MAX_ROUTE];
 int node1, node2;
-char buf[M_SIZE];
+char* buf;
 
 	binary_semaphore_initialize_0(node1);
 	binary_semaphore_initialize_0(node2);
@@ -64,15 +70,15 @@ char buf[M_SIZE];
     
     do {
     	binary_semaphore_take(node1);
-        if ( (len_read = read(test, buf, M_SIZE-1)) <= 0 ) {
+        if ( (len_read = read(test, buf = (char*) malloc (M_SIZE-1), M_SIZE-1)) <= 0 ) {
             perror("read");
         }
         printf("Incomming message (%d): %s\n", len_read, buf);
         binary_semaphore_initialize_0(node2);
-        if ( len_write = write(pipe12, buf, strlen(buf)) <= 0)
+        if ( len_write = write(pipe12, buf, len_read) <= 0)
     		perror("write");
     	
-        
+        free(buf);
         
     } while ( 1 );
     
