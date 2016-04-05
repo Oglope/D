@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <semaphore.h>
+#include "./bin_sem.h"
 
 #define MAX_CHANNEL 3 //Количество бит, отвечающих за номер канала
 #define MAX_ROUTE 4   //Количество бит, отвечающих за номер маршрута
@@ -48,8 +49,11 @@ int dec=0,start;
 void main(int argc,char* argv) {
 
 int pipe12, len_read, len_write, test;
+int node1, node2;
 char buf[M_SIZE];
 
+	binary_semaphore_initialize_0(node1);
+	binary_semaphore_initialize_0(node2);
 	if ( test = open(TEST, O_RDONLY)) {
     	perror("open");
     }
@@ -59,15 +63,15 @@ char buf[M_SIZE];
     }
     
     do {
-    	sem_wait(&node);
-        if ( (len_read = read(test, buf, strlen(buf))) <= 0 ) {
+    	binary_semaphore_take(node1);
+        if ( (len_read = read(test, buf, M_SIZE-1)) <= 0 ) {
             perror("read");
         }
-        else {
-        	printf("Incomming message (%d): %s\n", len_read, buf);
-        	if ( len_write = write(pipe12, buf, strlen(buf)) <= 0)
-    			perror("write");
-    	}
+        printf("Incomming message (%d): %s\n", len_read, buf);
+        binary_semaphore_initialize_0(node2);
+        if ( len_write = write(pipe12, buf, strlen(buf)) <= 0)
+    		perror("write");
+    	
         
         
     } while ( 1 );
