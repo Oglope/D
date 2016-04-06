@@ -54,6 +54,7 @@ char buf[M_SIZE];
 
     
     do {
+    	memset(buf, '\0', M_SIZE);
     	binary_semaphore_take(node2);
         if ( (len = read(pipe12, buf, M_SIZE-1)) <= 0 ) {
             perror("read");

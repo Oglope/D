@@ -37,11 +37,11 @@ void main() {
     }
 	
 	do {
-		scanf("%s",buf);
+		scanf("%s",buf );
 		if ( len = write(test, buf, strlen(buf)))
 			binary_semaphore_free(node1);
     	else		
-    		perror("write");
+    		perror("write");   	
     	
     }
 	while (1);
