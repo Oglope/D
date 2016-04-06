@@ -18,21 +18,39 @@
 
 void main() {
 
-	int test,i,len,sem_node[MAX_NODE];
-	int node1,node2;
+	int test,len;
+	int node1, node2, node8, node9, node11, node10, node17, node18;
 	char buf[M_SIZE];
 	
 	key_t key1 = ftok("node1", 1);
 	key_t key2 = ftok("node2", 1);
+	key_t key8 = ftok("node8", 1);
+	key_t key9 = ftok("node9", 1);
+	key_t key10 = ftok("node10", 1);
+	key_t key11 = ftok("node11", 1);
+	key_t key17 = ftok("node17", 1);
+	key_t key18 = ftok("node18", 1);
+	
 	node1 = binary_semaphore_allocation(key1, 0666 | IPC_CREAT);
 	node2 = binary_semaphore_allocation(key2, 0666 | IPC_CREAT);
+	node8 = binary_semaphore_allocation(key8, 0666 | IPC_CREAT);
+	node9 = binary_semaphore_allocation(key9, 0666 | IPC_CREAT);
+	node10 = binary_semaphore_allocation(key10, 0666 | IPC_CREAT);
+	node11 = binary_semaphore_allocation(key11, 0666 | IPC_CREAT);
+	node17 = binary_semaphore_allocation(key17, 0666 | IPC_CREAT);
+	node18 = binary_semaphore_allocation(key18, 0666 | IPC_CREAT);
+	
 	binary_semaphore_initialize_0(node1);
 	binary_semaphore_initialize_0(node2);
-	
-	for (i=0; i<MAX_NODE; i++)
+	binary_semaphore_initialize_0(node8);
+	binary_semaphore_initialize_0(node9);
+	binary_semaphore_initialize_0(node10);
+	binary_semaphore_initialize_0(node11);
+	binary_semaphore_initialize_0(node17);
+	binary_semaphore_initialize_0(node18);
 		
 	
-	if ( test = open(TEST, O_RDWR)) {
+	if ( test = open("./test", O_RDWR)) {
     	perror("open");
     }
 	

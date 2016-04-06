@@ -14,15 +14,24 @@
 
 #define TEST "./test"
 
-int pipe1_2, pipe2_9, pipe2_11, test;
-int node1, node2, node9 , node11;
+int pipe2_11, pipe10_11, pipe11_18, test;
+int node2, node10, node11 , node18;
+
+void output_1(char* buf) {
+
+	int len;
+
+	binary_semaphore_free(node2);
+    if ( len = write(pipe2_11, buf, strlen(buf)-MAX_CHANNEL) <= 0)
+    	perror("write");
+}
 
 /*void output_3(char* buf) {
 
 	int len;
 
-	binary_semaphore_free(node3);
-    if ( len = write(pipe2_3, buf, strlen(buf)-MAX_CHANNEL) <= 0)
+	binary_semaphore_free(node12);
+    if ( len = write(pipe11_12, buf, strlen(buf)-MAX_CHANNEL) <= 0)
     	perror("write");
 }*/
 
@@ -30,8 +39,8 @@ void output_4(char* buf) {
 
 	int len;
 
-	binary_semaphore_free(node9);
-    if ( len = write(pipe2_9, buf, strlen(buf)-MAX_CHANNEL) <= 0)
+	binary_semaphore_free(node18);
+    if ( len = write(pipe11_18, buf, strlen(buf)-MAX_CHANNEL) <= 0)
     	perror("write");
 }
 
@@ -39,19 +48,19 @@ void output_5(char* buf) {
 
 	int len;
 
-	binary_semaphore_free(node1);
-    if ( len = write(pipe1_2, buf, strlen(buf)-MAX_CHANNEL) <= 0)
+	binary_semaphore_free(node10);
+    if ( len = write(pipe10_11, buf, strlen(buf)-MAX_CHANNEL) <= 0)
     	perror("write");
 }
 
-void output_6(char* buf) {
+/*void output_6(char* buf) {
 
 	int len;
 
-	binary_semaphore_free(node11);
-    if ( len = write(pipe2_11, buf, strlen(buf)-MAX_CHANNEL) <= 0)
+	binary_semaphore_free(node20);
+    if ( len = write(pipe11_20, buf, strlen(buf)-MAX_CHANNEL) <= 0)
     	perror("write");
-}
+}*/
 
 void build_route(int *mas_route, char* buf) {
 
@@ -73,6 +82,9 @@ void build_route(int *mas_route, char* buf) {
 		case 0 :
 			printf("\nDeliver sucessful");
 			break;
+		case 1 :
+			output_1(buf);
+			break;
 		/*case 3 :
 			output_3(buf);
 			break;*/
@@ -82,9 +94,9 @@ void build_route(int *mas_route, char* buf) {
 		case 5 :
 			output_5(buf);
 			break;
-		case 6 :
-			output_6(buf);
-			break;
+		/*case 6 :
+			output_6(buf):
+			break;*/
 		default :
 			printf("Error");
 			break;
@@ -94,60 +106,51 @@ void build_route(int *mas_route, char* buf) {
 void main(int argc,char* argv) {
 
 //int Pipe12, test;
-int len_read;
+int len_read,i;
 int mas_route[MAX_ROUTE];
 //int node1, node2;
 char buf[M_SIZE];
 
-	binary_semaphore_initialize_0(node1);
 	binary_semaphore_initialize_0(node2);
-	binary_semaphore_initialize_0(node9);
+	binary_semaphore_initialize_0(node10);
 	binary_semaphore_initialize_0(node11);
+	binary_semaphore_initialize_0(node18);
 	
-	/*if ( test = open(TEST, O_RDONLY)) {
+	if ( test = open(TEST, O_RDONLY)) {
     	perror("open");
-    }*/
+    }
 
-    if ( pipe1_2 = open("./1_2", O_RDWR)) {
-    	perror("open");
-    }
-    
-    if ( pipe2_9 = open("./2_9", O_RDWR)) {
-    	perror("open");
-    }
-    
     if ( pipe2_11 = open("./2_11", O_RDWR)) {
+    	perror("open");
+    }
+    
+    if ( pipe10_11 = open("./10_11", O_RDWR)) {
+    	perror("open");
+    }
+    
+    if ( pipe11_18 = open("./11_18", O_RDWR)) {
     	perror("open");
     }
     
     do {
     	memset(buf, '\0', M_SIZE);
-    	binary_semaphore_take(node2);
+    	binary_semaphore_take(node11);
         /*if ( (len_read = read(test, buf, M_SIZE-1)) <= 0 ) 
             perror("read");*/
-        if (len_read = read(pipe1_2, buf, M_SIZE-1))  {
-        	printf("Incomming message (%d): %s\n", len_read, buf);
-            build_route(mas_route, buf);
-            continue;
-        }
-        if (len_read = read(pipe2_9, buf, M_SIZE-1)) {
-        	printf("Incomming message (%d): %s\n", len_read, buf);
-            build_route(mas_route, buf);
-            continue;
-        }
-        if (len_read = read(pipe2_11, buf, M_SIZE-1)) {
-        	printf("Incomming message (%d): %s\n", len_read, buf);
-            build_route(mas_route, buf);
-            continue;
-        }
+        if ( (len_read = read(pipe2_11, buf, M_SIZE-1)) <= 0 ) 
+            perror("read");
+        if ( (len_read = read(pipe10_11, buf, M_SIZE-1)) <= 0 ) 
+            perror("read");
+        if ( (len_read = read(pipe11_18, buf, M_SIZE-1)) <= 0 ) 
+            perror("read");
         printf("Incomming message (%d): %s\n", len_read, buf);
         build_route(mas_route, buf);
         
     } while ( 1 );
     
-    close(pipe1_2);
-    close(pipe2_9);
     close(pipe2_11);
+    close(pipe10_11);
+    close(pipe11_18);
     close(test);
 	
 }
