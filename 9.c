@@ -6,11 +6,11 @@
 #include <semaphore.h>
 #include "./bin_sem.h"
 
-#define MAX_CHANNEL 1 //Количество бит, отвечающих за номер канала
-#define MAX_ROUTE 3   //Количество бит, отвечающих за номер маршрута
-#define MAX_MASS 16  //Максимальное количество записей в таблицу маршрутизации
+#define MAX_CHANNEL 3 //Количество бит, отвечающих за номер канала
+#define MAX_ROUTE 10   //Количество бит, отвечающих за номер маршрута
+//#define MAX_MASS 16  //Максимальное количество записей в таблицу маршрутизации
 #define MIN_NUMBER 0   //Минимальный номер маршрута
-#define M_SIZE 256
+#define M_SIZE 395	//Размер пакета (информационный)
 
 #define TEST "./test"
 
@@ -62,16 +62,34 @@ void output_6(char* buf) {
     	perror("write");
 }
 
+int bin_to_dec (char *bin) {
+	
+	int len = strlen(bin)-1; 
+	int dec=0;
+	
+	while (len>=0) {
+		if (bin[strlen(bin)-len-1] == '1')
+			dec = dec + pow(2,len);
+		len--;
+	}
+	printf("dec = %d", dec);	
+	return dec;
+}
+
 void build_route(int *mas_route, char* buf) {
 
 	int i, route_num, channel;
-	char route_char[MAX_ROUTE];
+	char route_char[MAX_ROUTE], channel_char[MAX_CHANNEL];
 	
 	for (i=0;i<MAX_ROUTE;i++) 
 		route_char[i] = buf[i];
 	
-	route_num = atoi(route_char);
-	channel = atoi(&buf[strlen(buf)-1]);
+	route_num = bin_to_dec(route_char);
+	
+	for (i=0; i<MAX_CHANNEL; i++)
+		channel_char[i] = buf[strlen(buf)-MAX_CHANNEL+i-1];
+	
+	channel = bin_to_dec(channel_char);
 	
 	printf("route = %d\n", route_num);
 	printf("channel = %d\n", channel);
@@ -152,8 +170,8 @@ char buf[M_SIZE];
             build_route(mas_route, buf);
             continue;
         }
-        printf("Incomming message (%d): %s\n", len_read, buf);
-        build_route(mas_route, buf);
+        //printf("Incomming message (%d): %s\n", len_read, buf);
+        //build_route(mas_route, buf);
         
     } while ( 1 );
     
