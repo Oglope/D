@@ -18,4 +18,5 @@ all:
 	gcc 11.o bin_sem.o -lpthread -lm -o 11
 	gcc 17.o bin_sem.o -lpthread -lm -o 17
 	gcc 18.o bin_sem.o -lpthread -lm -o 18
-	gcc Makefifo.c -lpthread -o Makefifo
+	gcc Makefifo.c -o Makefifo
+	gcc removefifo.c -o Removefifo

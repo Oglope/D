@@ -8,11 +8,9 @@
 
 #define MAX_CHANNEL 3 //Количество бит, отвечающих за номер канала
 #define MAX_ROUTE 10   //Количество бит, отвечающих за номер маршрута
-//#define MAX_MASS 16  //Максимальное количество записей в таблицу маршрутизации
-#define MIN_NUMBER 0   //Минимальный номер маршрута
+#define MAX_MASS 1000  //Максимальное количество записей в таблицу маршрутизации
+//#define MIN_NUMBER 0   //Минимальный номер маршрута
 #define M_SIZE 395	//Размер пакета (информационный)
-
-#define TEST "./test"
 
 int pipe1_8, pipe8_9, pipe8_17, test;
 int node1, node8, node9 , node17;
@@ -55,15 +53,16 @@ void output_6(char* buf) {
 
 int bin_to_dec (char *bin) {
 	
-	int len = strlen(bin)-1; 
-	int dec=0;
+	int len = strlen(bin)-3; //-2 , т.к. 10 = длина, пишет = 11, нужно 9 (не забыть стереть)!!
+	int dec = 0;
 	
+	printf("\nlen = %d", len);
 	while (len>=0) {
-		if (bin[strlen(bin)-len-1] == '1')
-			dec = dec + pow(2,len);
+		if (bin[strlen(bin)-len-3] == '1') //Костыль #2
+			dec = dec + pow (2,len);
 		len--;
 	}
-	printf("dec = %d", dec);	
+	printf("\ndec = %d", dec);	
 	return dec;
 }
 
@@ -72,18 +71,21 @@ void build_route(int *mas_route, char* buf) {
 	int i, route_num, channel;
 	char route_char[MAX_ROUTE], channel_char[MAX_CHANNEL];
 	
-	for (i=0;i<MAX_ROUTE;i++) 
+	for (i=0; i<MAX_ROUTE; ++i) 
 		route_char[i] = buf[i];
 	
+	printf("\nroute_char = %s",route_char);
+
 	route_num = bin_to_dec(route_char);
-	
 	for (i=0; i<MAX_CHANNEL; i++)
-		channel_char[i] = buf[strlen(buf)-MAX_CHANNEL+i-1];
+		channel_char[i] = buf[strlen(buf)-MAX_CHANNEL+i];
+		
+	printf("\nchannel_char = %s",channel_char);
 	
 	channel = bin_to_dec(channel_char);
 	
-	printf("route = %d\n", route_num);
-	printf("channel = %d\n", channel);
+	printf("\nroute = %d", route_num);
+	printf("\nchannel = %d", channel);
 	
 	mas_route[route_num] = channel;
 	
@@ -113,18 +115,19 @@ void main(int argc,char* argv) {
 
 //int Pipe12, test;
 int len_read,i;
-int mas_route[MAX_ROUTE];
+int mas_route[MAX_MASS];
 //int node1, node2;
 char buf[M_SIZE];
 
-	binary_semaphore_initialize_0(node1);
-	binary_semaphore_initialize_0(node8);
-	binary_semaphore_initialize_0(node9);
-	binary_semaphore_initialize_0(node17);
+	key_t key1 = ftok("node1", 1);
+	key_t key8 = ftok("node8", 1);
+	key_t key9 = ftok("node9", 1);
+	key_t key17 = ftok("node17", 1);
 	
-	if ( test = open(TEST, O_RDONLY)) {
-    	perror("open");
-    }
+	node1 = binary_semaphore_allocation(key1, 0666);
+	node8 = binary_semaphore_allocation(key8, 0666);
+	node9 = binary_semaphore_allocation(key9, 0666);
+	node17 = binary_semaphore_allocation(key17, 0666);
 
     if ( pipe1_8 = open("./1_8", O_RDWR)) {
     	perror("open");

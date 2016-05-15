@@ -6,11 +6,13 @@
 #include <semaphore.h>
 #include "./bin_sem.h"
 
+
+
 #define MAX_CHANNEL 3 //Количество бит, отвечающих за номер канала
-#define MAX_ROUTE 4   //Количество бит, отвечающих за номер маршрута
-#define MAX_MASS 16  //Максимальное количество записей в таблицу маршрутизации
-#define MIN_NUMBER 0   //Минимальный номер маршрута
-#define M_SIZE 256
+#define MAX_ROUTE 10   //Количество бит, отвечающих за номер маршрута
+#define MAX_MASS 1000  //Максимальное количество записей в таблицу маршрутизации
+///#define MIN_NUMBER 0   //Минимальный номер маршрута
+#define M_SIZE 395
 #define MAX_NODE 2 //Количество узлов
 #define TEST "./test"
 
@@ -18,7 +20,7 @@
 
 void main() {
 
-	int test,len;
+	int test,len,quest;
 	int node1, node2, node8, node9, node11, node10, node17, node18;
 	char buf[M_SIZE];
 	
@@ -55,12 +57,31 @@ void main() {
     }
 	
 	do {
-		scanf("%s",buf );
-		if ( len = write(test, buf, strlen(buf)))
-			binary_semaphore_free(node1);
-    	else		
-    		perror("write");   	
-    	
+		printf("\nPacket");
+		
+		printf("\nChose node");
+		scanf("%d",&quest);
+		switch (quest) {
+			case 1 :
+				printf("\nPacket");
+				scanf("%s",buf );
+				if ( len = write(test, buf, strlen(buf)))
+					binary_semaphore_free(node1);
+    			else		
+    				perror("write");
+    			break;
+    		case 2 : 
+    			printf("\nPacket");
+				scanf("%s",buf );
+				if ( len = write(test, buf, strlen(buf)))
+					binary_semaphore_free(node2);
+    			else		
+    				perror("write");
+    			break;
+    		default :
+    			printf("\nError node");
+    			break;
+    	}	  	
     }
 	while (1);
 	
